@@ -2,12 +2,18 @@
 <html>
 	<head>
 		<title>Self Driving Car</title>
-		<script src="walls.js"></script>
-		<script src="car.js"></script>
-		<script src="main.js"></script>
 		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
 		<canvas style="height: 100%; width: 100%"></canvas>
 	</body>
+	<script>
+	let canvas = document.querySelector("canvas");
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+	let ctx = canvas.getContext("2d");
+	</script>
+	<script src="walls.js"></script>
+	<script src="car.js"></script>
+	<script src="main.js"></script>
 </html>

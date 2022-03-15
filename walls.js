@@ -17,7 +17,7 @@ class Wall {
 		ctx.stroke();
 	}
 }
-function formatAngle(angle, type) {
+function formatAngle(angle, type = '') {
 	if (type == 'rad') {
 		angle %= 360; // turn in |0 - 360| range
 		if (angle < 0)

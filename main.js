@@ -21,17 +21,14 @@ window.onload = function() {
 		requestAnimationFrame(animate);
 		ctx.clearRect(0,0, innerWidth, innerHeight);
 		//walls.forEach(wall => { wall.draw() });
+		car.drive();
 		car.draw();
 	}
-	let canvas = document.querySelector("canvas");
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
-	let ctx = canvas.getContext("2d");
+	
 	ctx.fillStyle = 'orange';
 	ctx.strokeStyle = 'gray';
 	ctx.lineWidth = '3';
-	let cvs = { x: canvas.width, y: canvas.height };
 	let walls = new Array();
-	let car = new Car();
+	let car = new Car(new Point(500, 300), 0, 0, 50, 75);
 	animate();
 }

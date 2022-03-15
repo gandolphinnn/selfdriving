@@ -36,26 +36,49 @@ class Ray {
 	}
 }
 class Car {
-	constructor(c, degr) {
+	constructor(c, degr, speed, width, length) {
 		this.c = c
 		this.degr = degr;
-		this.speed = 0;
-		this.width = 10; // view from the front
-		this.length = 15; // view from the side
-		this.dist_c_ps = Math.sqrt((this.width ** 2) + (this.length ** 2));
-		this.degr
+		this.speed = speed; // value must stay between -10 and 100 and then divided for 10
+		this.width = width; // view from the front
+		this.length = length; // view from the side
+		this.dist_c_ps = Math.sqrt(((this.width / 2) ** 2) + ((this.length / 2) ** 2));
+		this.degr_c_ps = formatAngle(Math.asin((this.width / 2)/this.dist_c_ps), 'degr');
+	}
+	drive() {
+		if (this.speed > 100)
+			this.speed = 100;
+		if (this.speed < -10)
+			this.speed = -10;
+		let rad = formatAngle(this.degr, 'rad');
+		this.c.x += Math.cos(rad) * this.speed / 10;
+		this.c.y -= Math.sin(rad) * this.speed / 10;
 	}
 	draw() {
 		let p = new Array(4);
-		for (let i = 0; i < 4; i++) {
-			p[i] = new Point(); // todo
-		}
+		let rad = formatAngle(this.degr, 'rad');
+		p[0] = new Point(this.c.x + Math.cos(rad) * this.length / 2,
+						this.c.y + Math.sin(rad) * -this.length / 2); 
+		rad = formatAngle(this.degr + this.degr_c_ps, 'rad');
+		p[1] = new Point(this.c.x + Math.cos(rad) * this.dist_c_ps,
+						this.c.y + Math.sin(rad) * -this.dist_c_ps);
+		rad = formatAngle(this.degr - this.degr_c_ps, 'rad');
+		p[2] = new Point(this.c.x + Math.cos(rad) * this.dist_c_ps,
+						this.c.y + Math.sin(rad) * -this.dist_c_ps);
+		rad = formatAngle(this.degr + 180 + this.degr_c_ps, 'rad');
+		p[3] = new Point(this.c.x + Math.cos(rad) * this.dist_c_ps,
+						this.c.y + Math.sin(rad) * -this.dist_c_ps);
+		rad = formatAngle(this.degr + 180 - this.degr_c_ps, 'rad');
+		p[4] = new Point(this.c.x + Math.cos(rad) * this.dist_c_ps,
+						this.c.y + Math.sin(rad) * -this.dist_c_ps);
 		ctx.beginPath();
-		ctx.moveTo(p1.x, p1.y);
-		ctx.lineTo(p2.x, p2.y);
-		ctx.lineTo(p3.x, p3.y);
-		ctx.lineTo(p4.x, p4.y);
-		ctx.lineTo(p1.x, p1.y);
+		ctx.moveTo(p[1].x, p[1].y);
+		ctx.lineTo(p[2].x, p[2].y);
+		ctx.lineTo(p[3].x, p[3].y);
+		ctx.lineTo(p[4].x, p[4].y);
+		ctx.lineTo(p[1].x, p[1].y);
+		ctx.moveTo(this.c.x, this.c.y);
+		ctx.lineTo(p[0].x, p[0].y)
 		ctx.globalAlpha = '1';
 		ctx.stroke();
 	}
