@@ -17,7 +17,7 @@ class Wall {
 		ctx.stroke();
 	}
 }
-function formatAngle(angle, type = '') {
+function formA(angle, type = '') {
 	if (type == 'rad') {
 		angle %= 360; // turn in |0 - 360| range
 		if (angle < 0)
@@ -26,6 +26,11 @@ function formatAngle(angle, type = '') {
 	}
 	if (type == 'degr') {
 		angle *= 180 / Math.PI;
+		angle %= 360; // turn in |0 - 360| range
+		if (angle < 0)
+			angle += 360 // turn in positive angle
+	}
+	if (type == '') {
 		angle %= 360; // turn in |0 - 360| range
 		if (angle < 0)
 			angle += 360 // turn in positive angle
