@@ -13,22 +13,25 @@ window.onload = function() {
 		mouse.pos.y = e.clientY;
 		mouse.pos.x = e.clientX;
 	});
-    let mouse = {
+	let mouse = {
 		pos: new Point(null, null),
 		state: 0
 	}
-    function animate() {
+	function animate() {
 		requestAnimationFrame(animate);
 		ctx.clearRect(0,0, innerWidth, innerHeight);
-		//walls.forEach(wall => { wall.draw() });
+		walls.forEach(wall => { wall.draw() });
 		car.drive();
+		car.rays.forEach(ray => {
+			ray.calculateEnd();
+		});
 		car.draw();
 	}
 	
 	ctx.fillStyle = 'orange';
 	ctx.strokeStyle = 'gray';
 	ctx.lineWidth = '3';
-	let walls = new Array();
-	let car = new Car(new Point(500, 300), 0, 0, 50, 75);
+	walls.push(new Wall(new Point(400, 400), new Point(200, 200)));	
+	let car = new Car(new Point(500, 300), 0, 10, 20, 50);
 	animate();
 }
