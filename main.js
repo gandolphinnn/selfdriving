@@ -13,6 +13,22 @@ window.onload = function() {
 		mouse.pos.y = e.clientY;
 		mouse.pos.x = e.clientX;
 	});
+	document.addEventListener('keydown', function(e) {
+		switch(e.code){
+			case 'KeyW': case 'ArrowUp': // gas pedal
+				break;
+			case 'KeyA': case 'ArrowLeft': // left
+				break;
+			case 'KeyD': case 'ArrowRight': // right
+				break;
+			case 'KeyS': case 'ArrowDown': // break pedal / reverse gear
+				break;
+			case 'Enter': //switch mode
+				mode = false; //! change this in a boolean variable
+				break;
+			default: break;
+		}
+	});
 	let mouse = {
 		pos: new Point(null, null),
 		state: 0
@@ -21,7 +37,12 @@ window.onload = function() {
 		requestAnimationFrame(animate);
 		ctx.clearRect(0,0, innerWidth, innerHeight);
 		walls.forEach(wall => { wall.draw() });
-		car.drive();
+		if (mode == 'auto') { //!
+			car.autoDrive();
+		}
+		if (mode == 'user') {
+			car.userDrive();
+		}
 		car.rays.forEach(ray => {
 			ray.calculateEnd();
 		});
@@ -32,6 +53,8 @@ window.onload = function() {
 	ctx.strokeStyle = 'gray';
 	ctx.lineWidth = '3';
 	walls.push(new Wall(new Point(400, 400), new Point(200, 200)));	
-	let car = new Car(new Point(500, 300), 0, 10, 20, 50);
+	walls.push(new Wall(new Point(1000, 400), new Point(1000, 200)));	
+	let car = new Car(new Point(500, 300), 0, 0, 30, 50);
+	
 	animate();
 }

@@ -6,14 +6,20 @@ class Ray {
 		this.length = undefined;
 		this.calculateEnd();
 	}
-	draw() {
+	draw(carL) {
 		ctx.beginPath();
 		ctx.moveTo(this.p.x, this.p.y);
 		ctx.lineTo(this.endP.x, this.endP.y);
-		if (this.length > 100) {
+		if (this.length > carL * 3) {
 			ctx.strokeStyle = 'green';
+			ctx.stroke();
+			ctx.strokeStyle = 'gray';
 		}
-		ctx.stroke();
+		else {
+			ctx.strokeStyle = 'red';
+			ctx.stroke();
+			ctx.strokeStyle = 'gray';
+		}
 	}
 	calculateEnd() {
 		let sin = Math.sin(formA(this.degr, 'rad'));
@@ -35,7 +41,7 @@ class Ray {
 				this.endP.y = y1 + t * (y2 - y1);
 			}
 		});
-		this.length = Math.sqrt((this.p.x - this.endP.x) ** 2 + (this.p.y - this.y) ** 2);
+		this.length = Math.sqrt((this.p.x - this.endP.x) ** 2 + (this.p.y - this.endP.y) ** 2);
 	}
 }
 class Car {
@@ -49,7 +55,18 @@ class Car {
 		this.rays = new Array(8);
 		this.calcPointsRays();
 	}
-	drive() {
+	userDrive() {
+		switch (move) {
+			case 'gas': break;
+			case 'left': break;
+			case 'right': break;
+			case 'reverse': break;
+		}
+	}
+	autoDrive() {
+
+	}
+	updatePos() {
 		if (this.speed > 100)
 			this.speed = 100;
 		if (this.speed < -20)
@@ -62,15 +79,15 @@ class Car {
 	calcPointsRays() {
 		this.points[0] = new Point(this.c.x+Math.cos(formA(this.degr, 'rad'))*this.length/2,this.c.y-Math.sin(formA(this.degr, 'rad'))*this.length/2);
 		let rad = formA(this.degr + 90, 'rad'); 
-		this.points[1] = new Point(this.points[0].x+Math.cos(rad)*this.width/3, this.points[0].y-Math.sin(rad)*this.width/3);
-		this.points[2] = new Point(this.points[0].x-Math.cos(rad)*this.width/3, this.points[0].y+Math.sin(rad)*this.width/3);
-		this.points[3] = new Point(this.points[1].x+Math.cos(rad)*this.width/3, this.points[1].y-Math.sin(rad)*this.width/3);
-		this.points[4] = new Point(this.points[2].x-Math.cos(rad)*this.width/3, this.points[2].y+Math.sin(rad)*this.width/3);
-		this.points[5] = new Point(this.points[3].x+Math.cos(rad)*this.width/3, this.points[3].y-Math.sin(rad)*this.width/3);
-		this.points[6] = new Point(this.points[4].x-Math.cos(rad)*this.width/3, this.points[4].y+Math.sin(rad)*this.width/3);
+		this.points[1] = new Point(this.points[0].x+Math.cos(rad)*this.width/6, this.points[0].y-Math.sin(rad)*this.width/6);
+		this.points[2] = new Point(this.points[0].x-Math.cos(rad)*this.width/6, this.points[0].y+Math.sin(rad)*this.width/6);
+		this.points[3] = new Point(this.points[1].x+Math.cos(rad)*this.width/6, this.points[1].y-Math.sin(rad)*this.width/6);
+		this.points[4] = new Point(this.points[2].x-Math.cos(rad)*this.width/6, this.points[2].y+Math.sin(rad)*this.width/6);
+		this.points[5] = new Point(this.points[3].x+Math.cos(rad)*this.width/6, this.points[3].y-Math.sin(rad)*this.width/6);
+		this.points[6] = new Point(this.points[4].x-Math.cos(rad)*this.width/6, this.points[4].y+Math.sin(rad)*this.width/6);
 		this.points[7] = new Point(this.c.x-Math.cos(formA(this.degr, 'rad'))*this.length/2,this.c.y+Math.sin(formA(this.degr, 'rad'))*this.length/2);
-		this.points[8] = new Point(this.points[7].x+Math.cos(rad)*this.width, this.points[7].y-Math.sin(rad)*this.width);
-		this.points[9] = new Point(this.points[7].x-Math.cos(rad)*this.width, this.points[7].y+Math.sin(rad)*this.width);
+		this.points[8] = new Point(this.points[7].x+Math.cos(rad)*this.width/2, this.points[7].y-Math.sin(rad)*this.width/2);
+		this.points[9] = new Point(this.points[7].x-Math.cos(rad)*this.width/2, this.points[7].y+Math.sin(rad)*this.width/2);
 		let degrArr = [this.degr, formA(this.degr + 10), formA(this.degr - 10), formA(this.degr + 20),
 			formA(this.degr - 20), formA(this.degr + 35), formA(this.degr - 35), formA(this.degr + 180)];
 		for (let i = 0; i < 8; i++) {
@@ -88,7 +105,7 @@ class Car {
 		ctx.lineTo(this.points[0].x, this.points[0].y);
 		ctx.stroke();
 		this.rays.forEach(ray => {
-			ray.draw();
+			ray.draw(this.length);
 		});
 	}
 }
