@@ -13,7 +13,13 @@
 		cvs.height = window.innerHeight;
 		let ctx = cvs.getContext("2d");
 		let walls = new Array();
-		let move;
+		let gameover = false;
+		let move = {
+			gas: false,
+			reverse: false,
+			left: false,
+			right: false
+		};
 	</script>
 	<script src="walls.js"></script>
 	<script src="car.js"></script>
