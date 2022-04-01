@@ -6,20 +6,21 @@ class Ray {
 		this.length = undefined;
 		this.calculateEnd();
 	}
-	draw(carL) {
+	draw(bestL, minTurn) {
 		ctx.beginPath();
 		ctx.moveTo(this.p.x, this.p.y);
 		ctx.lineTo(this.endP.x, this.endP.y);
-		if (this.length > carL * 3) {
+		if (this.length == bestL) {
+			ctx.strokeStyle = 'blue';
+		}
+		else if (this.length > minTurn) {
 			ctx.strokeStyle = 'green';
-			ctx.stroke();
-			ctx.strokeStyle = 'gray';
 		}
 		else {
 			ctx.strokeStyle = 'red';
-			ctx.stroke();
-			ctx.strokeStyle = 'gray';
 		}
+		ctx.stroke();
+		ctx.strokeStyle = 'gray';
 	}
 	calculateEnd() {
 		let sin = Math.sin(formA(this.degr, 'rad'));
@@ -57,13 +58,22 @@ class Car {
 		this.points = new Array(16);
 		this.rays = new Array(16);
 		this.calcPointsRays();
+		this.bestRayLength;
+		this.bestRayIndex;
+		this.turnLength = 30;
 	}
 	userDrive() {
+		//GR
 		if (move.gas) {
 			this.speed ++;
 		}
 		else if (move.reverse) {
-			this.speed -= 5;
+			if (this.speed > 0) {
+				this.speed --;
+			}
+			else {
+				this.speed -= 2;
+			}
 		}
 		else if (this.speed > 0) {
 			this.speed --;
@@ -71,6 +81,7 @@ class Car {
 		else if (this.speed < 0) {
 			this.speed++;
 		}
+		//LR
 		if (move.left && Math.abs(this.speed) > 5) {
 			this.degr += 2;
 		}
@@ -79,17 +90,37 @@ class Car {
 		}
 	}
 	autoDrive() {
-		
 	}
 	updatePos() {
 		if (this.speed > 100)
-			this.speed = 100;
+		this.speed = 100;
 		if (this.speed < -20)
-			this.speed = -20;
+		this.speed = -20;
 		let rad = formA(this.degr, 'rad');
 		this.c.x += Math.cos(rad) * this.speed / 10;
 		this.c.y -= Math.sin(rad) * this.speed / 10;
 		this.calcPointsRays();
+		this.calcBestray();
+	}
+	calcBestray() {
+		this.bestRayLength = 0;
+		let l;
+		for (let i = 0; i < 13; i++) {
+			l = this.rays[i].length;
+			if (l > this.bestRayLength && l >= this.turnLength) {
+				this.bestRayLength = this.rays[i].length;
+				this.bestRayIndex = i;
+			}				
+		}
+		if (this.bestRayLength == 0) {
+			for (let i = 13; i < 16; i++) {
+				l = this,rays[i].length;
+				if (l > this.bestRayLength && l >= this.turnLength) {
+					this.bestRayLength = this.rays[i].length;
+					this.bestRayIndex = i;
+				}				
+			}
+		}
 	}
 	calcPointsRays() {
 		this.points[0] = new Point(this.c.x+Math.cos(formA(this.degr, 'rad'))*this.length/2,this.c.y-Math.sin(formA(this.degr, 'rad'))*this.length/2);
@@ -106,6 +137,7 @@ class Car {
 		this.points[10]= new Point(this.points[8].x-Math.cos(rad)*this.width/12, this.points[8].y+Math.sin(rad)*this.width/12);
 		this.points[11]= new Point(this.points[9].x+Math.cos(rad)*this.width/12, this.points[9].y-Math.sin(rad)*this.width/12);
 		this.points[12]= new Point(this.points[10].x-Math.cos(rad)*this.width/12, this.points[10].y+Math.sin(rad)*this.width/12);
+
 		this.points[13]= new Point(this.c.x-Math.cos(formA(this.degr, 'rad'))*this.length/2,this.c.y+Math.sin(formA(this.degr, 'rad'))*this.length/2);
 		this.points[14]= new Point(this.points[13].x+Math.cos(rad)*this.width/2, this.points[13].y-Math.sin(rad)*this.width/2);
 		this.points[15]= new Point(this.points[13].x-Math.cos(rad)*this.width/2, this.points[13].y+Math.sin(rad)*this.width/2);
@@ -128,8 +160,7 @@ class Car {
 		ctx.lineTo(this.points[0].x, this.points[0].y);
 		ctx.stroke();
 		this.rays.forEach(ray => {
-			ray.draw(this.length);
+			ray.draw(this.bestRayLength, this.turnLength);
 		});
-		ctx.fillText(this.speed, 10, 10)		
 	}
 }
